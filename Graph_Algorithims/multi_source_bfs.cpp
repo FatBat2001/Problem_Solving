@@ -1,141 +1,120 @@
 #include<bits/stdc++.h>
-using namespace std;
+
 using ll = long long;
+using ld = long double;
+
+using namespace std;
+
+const int N = 1e6 + 5, MOD = 1e9 + 7, M = 100 + 3;
+int dx[] = {1, -1, 0, 0};
+int dy[] = {0, 0, -1, 1};
+/// 0 1 2 3
+/// D U L R
 
 void read_write();
-/**
-    https://www.spoj.com/problems/TOE2/
-    searching with bfs like two buttons problem 
 
-    The approach here is to precalculate all the states of valid 
-    X-O configurations that may happen 
-    total number of states is probably 9!
-    which is applicable to precalculation
+/*
+    problem link : https://codeforces.com/gym/100947/problem/H
+*/
+int n, m;
 
-**/
+int dist1[M][M], dist2[M][M];
 
-void fill_grid(char grid[][3], string & str);
+bool vis[M][M];
+bool valid (int x, int y, vector<string> &grid) {
+        return x >= 0 && y >= 0 && x < n && y < m && grid[x][y] != '#';
+};
 
-
-bool someone_already_won_or_the_grid_completed(string &str){
-    char grid[3][3];
-    fill_grid(grid, str);
-
-
-    bool flag = true;
-    // here checking for the grid to be completed 
-    for (int i = 0; i < (int) str.size(); i ++ ){
-        if (str[i] == '.') flag = false;
-    }
-    if (flag) return true;
-
-    // checking horizontal win
-    if (grid[0][0] == grid[0][1] && grid[0][1] == grid[0][2] && grid[0][0] != '.')
-        return true;
-    if (grid[1][0] == grid[1][1] && grid[1][1] == grid[1][2]  && grid[1][0] != '.')
-        return true;
-    if (grid[2][0] == grid[2][1] && grid[2][1] == grid[2][2] && grid[2][0] != '.')
-        return true;
-
-    // checking vertical win 
-    if (grid[0][0] == grid[1][0] && grid[1][0] == grid[2][0] && grid[0][0] != '.')
-        return true;
-    if (grid[0][1] == grid[1][1] && grid[1][1] == grid[2][1] && grid[0][1] != '.')
-        return true;
-    if (grid[0][2] == grid[1][2] && grid[1][2] == grid[2][2] && grid[0][2] != '.')
-        return true;
-
-    // checking the diagonals
-    if (grid[0][0] == grid[1][1] && grid[1][1] == grid[2][2] && grid[2][2] != '.')
-        return true;
-
-    if (grid[0][2] == grid[1][1] && grid[1][1] == grid[2][0] && grid[2][0] != '.')
-        return true;
-
-    return false;
-}
-
-// converts the string represntation of the current game state
-// to a grid so I can work on it 
-void fill_grid(char grid[][3], string & str) {
-    string s;
-    for (int i = 0; i < 3; i ++ ){
-        s = str.substr(3 * i, 3);
-        for (int j = 0; j < 3; j ++ ){
-            grid[i][j] = s[j];
+bool dfs(int x, int y, pair<int, int> &target, vector<string> &grid) {
+    if (x == target.first && y == target.second) return 1;
+    bool ret= false;
+    vis[x][y] = true;
+    for(int i = 0; i < 4; i ++){
+        int new_x = dx[i] + x, new_y = dy[i] + y;
+        if (valid(new_x, new_y, grid) && dist2[new_x][new_y] < dist1[new_x][new_y] && !vis[new_x][new_y]) {
+            ret |= dfs(new_x, new_y, target, grid);
         }
     }
+    return ret;
 }
-
-
-// This function returns a (set) of all possible board configurations using breadtf-first-search 
-// set implementation in c++ i think is a red-black-tree
-// so searching for a state is done in long(n) time which is quite good 
-
-set<string> calculate_states(){ 
-    set<string> valid_states;
-    char turn[] = {'X', 'O'};
-    string state = ".........";
-    queue<pair<int, string>> states;
+void solve() {
     
-    states.push({0, state});
-    valid_states.insert(state);
-    while (!states.empty())  {
-        auto current_state = states.front();
-        states.pop();
+    cin >> n >> m;
+    vector<string> grid(n);
+    vector<pair<int, int>> sources;
+    pair<int, int> sally, slipper;
 
-        // if someone in some state already one the game 
-        // it's not rational to keep adding x and o to the 
-        // current configuration 
-        if (someone_already_won_or_the_grid_completed(current_state.second)) {
-            continue;
+    
+    for (int i = 0; i < n; i ++) {
+        cin >> grid[i];
+        for (int j = 0; j < m; j ++) {
+            if (grid[i][j] == '*') {
+                dist1[i][j] = 0, sources.push_back({i, j});
+            } else  {
+                dist1[i][j] = INT_MAX;
+            }
+            if (grid[i][j] == 'S') {
+                dist2[i][j] = 0, sally = {i, j};
+            } else dist2[i][j] = INT_MAX;
+            if (grid[i][j] == 'X') slipper = {i, j};
+            vis[i][j] = false;
         }
-            
-        
-        for (int i = 0; i < 9; i ++ ){
-            pair<int, string> next_state = current_state;
-            if (current_state.second[i] == '.') {
-                next_state.second[i] = turn[next_state.first];
-                if (!valid_states.count(next_state.second)) {
-                    states.push(make_pair(1 - current_state.first, next_state.second));
-                    valid_states.insert(next_state.second);
-                }
+    }
+    
+    
+    
+    queue<pair<int, int>> q;
+    for (auto it : sources) q.push(it);
+    while (!q.empty()) {
+        auto par = q.front();
+        q.pop();
+        for (int i = 0; i < 4; i ++) {
+            int new_x = dx[i] + par.first, new_y = dy[i] + par.second;
+            if (valid(new_x, new_y, grid) && dist1[new_x][new_y] > dist1[par.first][par.second] + 1) {
+                dist1[new_x][new_y] = dist1[par.first][par.second] + 1;
+                q.push({new_x, new_y});
+            }
+        }        
+    }
+    q.push(sally);
+    while (!q.empty()) {
+        auto par = q.front();
+        q.pop();
+        for (int i = 0; i < 4; i ++) {
+            int new_x = dx[i] + par.first, new_y = dy[i] + par.second;
+            if (valid(new_x, new_y, grid) && dist2[new_x][new_y] > dist2[par.first][par.second] + 1
+            ) {
+                dist2[new_x][new_y] = dist2[par.first][par.second] + 1;
+                q.push({new_x, new_y});
             }
         }
     }
-
-    return valid_states;
+    
+    
+    if (dfs(sally.first, sally.second, slipper, grid)) {
+        cout <<"yes\n";
+    } else cout << "no\n";
 }
+   
 
 
-
-int main () {
-    read_write();
-    set<string> all_states = calculate_states();    
-    string str;
-    while (cin >> str, str != "end") {
-        if (all_states.count(str) && someone_already_won_or_the_grid_completed(str)) {
-            cout << "valid\n";
-        } else {
-            cout <<"invalid\n";
-        }
+int32_t main() {
+    read_write();   
+    int tt = 1;
+    cin >> tt;
+    while (tt--) {
+        solve();
     }
-    for (auto it :all_states)
-        cout << it << '\n';
-    
-
-    
 }
-
-
 
 void read_write() {
     ios::sync_with_stdio(false),
             cin.tie(nullptr),
             cout.tie(nullptr);
-#ifndef ONLINE_JUDGE        
-    freopen("C:\\Users\\adham\\Documents\\PST\\input.txt", "r", stdin);
-    freopen("C:\\Users\\adham\\Documents\\PST\\output.txt", "w", stdout);
-    
-#   endif    
+#ifndef ONLINE_JUDGE
+    freopen("../input.in", "r", stdin);
+    freopen("../output.out", "w", stdout);
+#else
+ 
+#  endif
 }

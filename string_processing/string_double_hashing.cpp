@@ -65,12 +65,17 @@ void pre()  {
     }
 
 }
-
+/* 
+    using this formula 
+    (a, b) = (a * max(b) + b) 
+    we can represent the pair a, b without making a pair datastructure 
+    
+*/
 void solve() {
     string str;
     int n, k;
     cin >> n >> k >> str;
-    set<pair<ll, ll>> s;
+    unordered_set<ll> s;
     ll hash1 = 0, hash2 = 0;
     for (int i = 0; i < k; i++) {
         hash1 = push_back(hash1, x, p1, str[i]);
@@ -78,8 +83,9 @@ void solve() {
     
     }
 
-    s.insert({hash1, hash2});
+    s.insert((hash1 * p2) + hash2);
     
+
     for (int i = k; i < n; i ++) {
         hash1 = push_back(hash1, x, p1, str[i]);
         hash1 = pop_front(hash1, xpow1[k], p1, str[i - k]);
@@ -87,7 +93,7 @@ void solve() {
         hash2 = push_back(hash2, x, p2, str[i]);
         hash2 = pop_front(hash2, xpow2[k], p2, str[i - k]);
     
-        s.insert({hash1, hash2});
+        s.insert((hash1 * p2) + hash2);
     }
 
     cout << s.size()<< endl;

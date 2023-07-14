@@ -36,21 +36,24 @@ int modInv(int a, int m) {
 ll xpow1[N ], xpow2[N];
 
 int x = 128, p1 = 1e9 + 7, p2 = 1e9 + 9;
-
-ll push_back(ll hash, ll x, ll p, char ch){
-    return ((hash * x) % p + ch) % p;
+ll fixMod(ll a, ll m){
+    return (a + m)%m;
 }
 
-ll pop_back(ll hash, ll x, ll p, char ch) {
-    return ((((hash - x) % p + p) % p) * modInv(x,p)) % p;
+ll push_back(ll h, ll x, ll p, char ch){
+    return (((h*x)%p)+ch)%p;
 }
 
-ll push_front(ll hash, ll xp, ll p, char ch) { // xp = xpow[oldLen]
-    return (hash + (xp * ch) % p) % p;
+ll push_front(ll h, ll xp, ll p, char ch){ // xp=XP[len]
+    return (h+(xp*ch)%p)%p;
 }
 
-ll pop_front(ll hash, ll xp, ll p, char ch) { // xp = xpow[oldLen - 1]
-    return ((hash - (xp * ch) % p) % p + p) % p;
+ll pop_back(ll h, ll x, ll p, char ch){
+    return (fixMod(h-ch,p)*modInv(x,p))%p;
+}
+
+ll pop_front(ll h, ll xp, ll p, char ch){ // xp=XP[len-1]
+    return fixMod(h-((xp*ch)%p),p);
 }
 
 

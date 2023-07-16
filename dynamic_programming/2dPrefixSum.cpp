@@ -6,7 +6,8 @@ using ll = long long ;
 ll pref[M][M];
 
 ll calc(ll k, ll l, ll i, ll j) {
-    return pref[k][l] - pref[i - 1][l] - pref[k][j - 1] + pref[i][j];
+    
+    return pref[k][l] - pref[i - 1][l] - pref[k][j - 1] + pref[i - 1][j - 1];
 }
 
 int main(){
@@ -30,6 +31,7 @@ int main(){
                 pref[i][j] += pref[i - 1][j];
             }
         }
+
         while (q--) {
             ll hs,ws, hb,wb;
             cin >> hs >> ws >> hb >> wb;

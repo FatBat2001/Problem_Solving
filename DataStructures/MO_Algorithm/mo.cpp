@@ -57,7 +57,7 @@ int32_t main() {
     vector<int>  a(n);
     vector<query> queries;
     for (int &i : a) cin >> i;
-    int root = (int)sqrt(n), idx = 0;
+    int root = (int)ceil(sqrt(n)), idx = 0;
     cin >> q;
     queries = vector<query>(q);
     while (q --) {

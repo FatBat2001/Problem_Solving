@@ -63,7 +63,7 @@ int lca(int a, int b) {
 void pre() {
     vector<int> t(2 * MAXN);
     for (int i = 0; i < 2 * MAXN; i ++) t[i] = L[i];
-     rmq = new RMQ(t);
+    rmq = new RMQ(t);
 }
 
 

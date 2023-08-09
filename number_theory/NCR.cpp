@@ -13,7 +13,6 @@ const int N = 1e6 + 5, M = 103, MOD = 2000014033, oo = 1e8;
     this calculates NCR correctly up to 100C100
     line : https://vjudge.net/contest/464603#problem/I
 */
-
 int fac[M], inv[M];
 
 ll mult(ll a, ll b)
@@ -52,6 +51,7 @@ int ncr(int n, int r)
         return 0;
     return mult(fac[n], mult(inv[n - r], inv[r]));
 }
+ 
 
 void solve()
 {

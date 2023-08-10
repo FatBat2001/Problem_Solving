@@ -1,4 +1,4 @@
-#include <iostream>
+#include <bits/stdc++.h>
 #include<vector>
 #include <cmath>
 
@@ -52,6 +52,6 @@ int main() {
     int n; cin >> n;
     vector<int>v(n);
     for (int &i : v)cin >> i;
-    SPARSTE_TABLE(v);
+    SPARSE_TABLE(v);
     
 }

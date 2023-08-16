@@ -55,10 +55,6 @@ ll pop_back(ll h, ll x, ll p, char ch){
 ll pop_front(ll h, ll xp, ll p, char ch){ // xp=XP[len-1]
     return fixMod(h-((xp*ch)%p),p);
 }
-
-
-
-
 void pre()  {
     xpow1[0] = 1;
     xpow2[0] = 1;

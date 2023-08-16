@@ -26,8 +26,6 @@ int vis[N];
 vector<int> adj[N];
 bool is_bipartite  = true;
 int n, m;
-
-
 // algorithm function
 void dfs(int node, int color) {
     if (!is_bipartite) return;
@@ -44,7 +42,6 @@ void dfs(int node, int color) {
         }
     }
 }
-
 void solve() {
     // input 
     cin >> n;
@@ -66,7 +63,6 @@ void solve() {
         cout << "NOT BICOLOURABLE.";
     }
     cout << '\n';
-
 }
 
 

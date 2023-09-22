@@ -1,6 +1,11 @@
 // problem link : https://www.spoj.com/problems/NAJPF/ 
 #include<bits/stdc++.h>
 using namespace std;
+/*
+    let's define prefix(i) as the longest substring from the beginning 
+    matchig with current substring starting from i 
+    , that's just it 
+*/
 vector<int> build_prefix(string &str) {
     int n = (int)str.size();
     vector<int> prefix(n);

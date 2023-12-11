@@ -44,8 +44,14 @@ struct SPARSE_TABLE{
         if (a[sparse_table[l][k].second] >= a[sparse_table[r - (1 << k) + 1][k].second]) return sparse_table[l][k].second;
         else return sparse_table[r - (1 << k) + 1][k].second ;
     }
+    int get_max(int l, int r) {
+        return a[query_max(l, r)];
+    }
+    int get_min(int l, int r) {
+        return a[query_min(l, r)];
+    }
 
-}; // NOTE : This implementation returns the index of the max(), min() element
+};
 
 
 int main() {

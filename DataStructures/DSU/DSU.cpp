@@ -4,54 +4,37 @@ using namespace std;
 const int N = 1e5 + 5;
 // you can answer queries ONLINE which means whenever you update the graph you can answer according 
 // to the new updates unlike the graph traversals 
+struct node{ 
+   long long parent; 
+   long long sz;  
+}; 
 
-struct DSU {
-    int parent[N];
-    int sz[N];
-    // you can add another attribute to keep track of the number of groups 
-    // EX : int numGroups = n >> where n is the number of nodes 
-    // whenever you connect to unconnected components decrease it by one 
-
-
-    DSU() {
-        for (int i = 0; i < N; i ++) {
-            parent[i] = i;
-            sz[i] = 1;
+struct DSU { 
+    vector<node> a;  
+    long long result; 
+    DSU(int _n) { 
+        result = 1LL * _n * (_n - 1) / 2; 
+        a.resize(_n + 1); 
+        for (int i = 0; i < _n + 1; i ++) { 
+            a[i].parent = i;
+            a[i].sz = 1;  
         }
     }
-    
-    int findParent(int x) {
-        if (parent[x] == x) return x;
-        return parent[x] = findParent(parent[x]);
+    int find(int u) { 
+        if (u == a[u].parent) return u; 
+        return a[u].parent = find(a[u].parent); 
     }
-
-    bool sameGroup(int x, int y) {
-        x = findParent(x);
-        y = findParent(y);
-        return x == y;
+    void join(int u, int v) { 
+        u = find(u); 
+        v = find(v); 
+        if (u == v) return; 
+        if (a[u].sz > a[v].sz) swap(u, v); 
+        result -= a[v].sz  * a[u].sz; 
+        a[u].sz += a[v].sz; 
+        a[v].parent = u; 
+        a[v].sz = 0; 
     }
-
-    void join(int u, int v) {
-        u = findParent(u);
-        v = findParent(v);
-        if (u == v)
-            return;
-        
-        if (sz[u] > sz[v]) {
-            swap(u, v);
-        }
-
-        parent[u] = v;
-        sz[v] += sz[u];
-        sz[u] = 0;
-    }
-    int getSize(int x) {
-        x = findParent(x);
-        return sz[x];
-    }
-    int getMaxGroup(){
-        return *max_element(sz, sz +N);
-    }
+    long long  get_result () {return this->result;}
 };
 
 int main () {
@@ -60,14 +43,14 @@ int main () {
     int tt;
     cin >> tt;
     while (tt -- ) {
-        DSU ds;
+        
         int n, m;
         cin >> n >> m;
+        DSU ds(n);
         for (int i = 0; i < m; i ++) {
             int u, v;
             cin >> u >> v;
             ds.join(u, v);
         }
-        cout << ds.getMaxGroup() << '\n';
     }
 }   

@@ -1,5 +1,2 @@
-.vscode/ 
-main.cpp 
-main 
-bin
-NCR
+.vscode
+src 

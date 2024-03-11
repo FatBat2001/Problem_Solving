@@ -6,7 +6,7 @@ using namespace std;
     matchig with current substring starting from i 
     , that's just it 
 */
-vector<int> build_prefix(string &str) {
+vector<int> kmp(string &str) {
     int n = (int)str.size();
     vector<int> prefix(n);
     int border = 0;
@@ -25,7 +25,7 @@ void solve() {
     int n = s1.length(), m = s2.length();
     if (m > n) return cout << "Not Found\n",void();
     s2 = s2 + "$" + s1;
-    vector<int> pref = build_prefix(s2);
+    vector<int> pref = kmp(s2);
     vector<int> ans;
     for (int i = 0; i < (int)pref.size(); i ++) {
         if (pref[i] == m)

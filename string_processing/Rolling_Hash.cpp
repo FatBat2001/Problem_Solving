@@ -1,14 +1,16 @@
-
 namespace RollingHash {
     int b1 = 31, b2 = 69, mod = 1e9 + 7, b1I = 129032259, b2I = 579710149;
-    vector<int> Pb1, Pb2;
+    vector<int> Pb1, Pb2, inv1, inv2;
     using pi = pair<int, int>;
 
     void pre(unsigned maxSize) {
-        Pb1 = Pb2 = vector<int>(maxSize + 1, 1);
-        for (int i = 1; i <= maxSize; i++) {
+        inv1 = inv2 = Pb1 = Pb2 = vector<int>(maxSize + 1, 1);
+        Pb1[1] = b1, Pb2[1] = b2, inv1[1] = b1I, inv2[1] = b2I;
+        for (int i = 2; i <= maxSize; i++) {
             Pb1[i] = int(1LL * Pb1[i - 1] * b1 % mod);
             Pb2[i] = int(1LL * Pb2[i - 1] * b2 % mod);
+            inv1[i] = int(1LL * inv1[i - 1] * b1I % mod);
+            inv2[i] = int(1LL * inv2[i - 1] * b2I % mod);
         }
     }
     class Hash {
@@ -67,6 +69,34 @@ namespace RollingHash {
             return size != o.size || code != o.code;
         }
     };
+
+    class HashRange {
+    public:
+        vector<Hash> pre, invPre;
+
+        template<class T>
+        HashRange(const T &s) {
+            pre.reserve(s.size());
+            invPre.reserve(s.size());
+            Hash c, c1;
+            for(auto &i : s) {
+                c.push_front(i);
+                c1.push_back(i);
+                pre.push_back(c);
+                invPre.push_back(c1);
+            }
+        }
+        Hash get(int l, int r) {
+            return l == 0? pre[r]: pre[r] - pre[l - 1];
+        }
+        Hash getInv(int l, int r) {
+            return l == 0? invPre[r]: Hash({
+                   (invPre[r].code.first - invPre[l - 1].code.first + mod) % mod * 1LL * inv1[invPre[l - 1].size] % mod,
+                   (invPre[r].code.second - invPre[l - 1].code.second + mod) % mod * 1LL * inv2[invPre[l - 1].size] % mod
+           }, r - l + 1);
+        }
+    };
+
     template<typename T>
     Hash getHash(T &s) {
         Hash c;
@@ -75,18 +105,11 @@ namespace RollingHash {
         return c;
     }
     template<typename T>
-    vector<Hash> getPreHash(T &s) {
-        vector<Hash> arr;
-        arr.reserve(s.size());
+    Hash getInvHash(T &s) {
         Hash c;
-        for(auto &i : s) {
-            c.push_front(i);
-            arr.push_back(c);
-        }
-        return arr;
-    }
-    Hash getRange(vector<Hash> &pre, int l, int r) {
-        return l == 0? pre[r]: pre[r] - pre[l - 1];
+        for(auto &i : s)
+            c.push_back(i);
+        return c;
     }
 }
 //using namespace RollingHash;

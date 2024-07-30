@@ -11,9 +11,7 @@ struct node{
 
 struct DSU { 
     vector<node> a;  
-    long long result; 
     DSU(int _n) { 
-        result = 1LL * _n * (_n - 1) / 2; 
         a.resize(_n + 1); 
         for (int i = 0; i < _n + 1; i ++) { 
             a[i].parent = i;
@@ -29,12 +27,10 @@ struct DSU {
         v = find(v); 
         if (u == v) return; 
         if (a[u].sz > a[v].sz) swap(u, v); 
-        result -= a[v].sz  * a[u].sz; 
         a[u].sz += a[v].sz; 
         a[v].parent = u; 
         a[v].sz = 0; 
     }
-    long long  get_result () {return this->result;}
 };
 
 int main () {

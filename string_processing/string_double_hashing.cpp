@@ -1,3 +1,5 @@
+using ll = long long; 
+const int N = 1e5 + 5; 
 namespace RollingHash {
     ll mult(ll a, ll b, ll mm) { return (1LL * a * b) % mm; }
 
@@ -73,11 +75,11 @@ namespace RollingHash {
         }
         void pop_front(char c) {
             hash.first = RollingHash::pop_front(hash.first, xpow1[sz-1], p1, c);
-            hash.second = RollingHash::push_front(hash.second, xpow2[sz-1], p2, c);
+            hash.second = RollingHash::pop_front(hash.second, xpow2[sz-1], p2, c);
             sz --;
         }
         ll get_hash() const{
-            return hash.first * p1 + p2;
+            return hash.first * p2 + hash.second;
         }
         ll get_size() const{
             return sz;
